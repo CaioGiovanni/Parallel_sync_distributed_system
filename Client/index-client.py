@@ -25,7 +25,7 @@ def receive_messages(client):
             msg = client.recv(2048).decode('utf-8')
             print(msg + '\n')
         except:
-            print('\,Não foi possível permanacer conctado no servidor!\n')
+            print('\nNão foi possível permanacer conctado no servidor!\n')
             print('Precione <ENTER> para continuar...')
             client.close()
             break
