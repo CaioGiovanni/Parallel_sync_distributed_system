@@ -3,41 +3,44 @@ import socket
 
 clients = []
 
-def main():
 
+def main():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     try:
         server.bind(('localhost', 7777))
         server.listen()
-    except:
-     return print('\nNão foi possível iniciar o servidor!\n')
+    except Exception as e:
+        return print('\nNão foi possível iniciar o servidor!\n' + str(e))
 
     while True:
-         client, addr = server.accept()
-         clients.append(client)
+        client, addr = server.accept()
+        clients.append(client)
+        thread = threading.Thread(target=messages_treatment, args=[client])
+        thread.start()
 
-    thread = threading.thread(target=messagesTreatment, args=[client])
-    thread.start()
 
-def messagesTreatment(client):
+def messages_treatment(client):
     while True:
         try:
             msg = client.recv(2048)
             broadcast(msg, client)
-        except:
-            deleteClient(client)
+        except Exception as e:
+            delete_client(client)
             break
+
 
 def broadcast(msg, client):
     for clientItem in clients:
         if clientItem != client:
             try:
                 clientItem.send(msg)
-            except:
-                deleteClient(clientItem)
+            except Exception as e:
+                delete_client(clientItem)
 
-def deleteClient(client):
+
+def delete_client(client):
     clients.remove(client)
+
 
 main()
