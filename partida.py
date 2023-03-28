@@ -1,5 +1,4 @@
-#from times import *
-#import times
+from times import *
 
 class Partida:
     def __init__(self, time1, time2) -> None:
@@ -21,13 +20,9 @@ class Partida:
     def setGolTime2(self,relatorio):
         self.relatorio = relatorio
     #GET
-    def getTime1(self):
-        return self.time1
-    def getTime1(self):
-        return self.time2
-    def getGolTime1(self):
-        return self.golTime1
-    def getGolTime2(self):
-        return self.golTime2
-    def getGolTime2(self):
-        return self.relatorio
+    def getPartida(self):
+        print("---------------------")
+        print("PARTIDA")
+        print("---------------------")
+        print(self.time1.getNome() + " " + self.golTime1 + "X" + self.golTime2 + " " + self.time2.getNome())
+

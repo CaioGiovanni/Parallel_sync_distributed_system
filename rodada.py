@@ -1,5 +1,4 @@
-#from partida import *
-import partida
+from partida import *
 
 class Rodada:
     def __init__(self) -> None:
@@ -13,6 +12,10 @@ class Rodada:
         self.resultados = resultados
 
     #GET
+    def getRodadas(self):
+        for x in self.rodadas:
+            x.getPartida()
+            
     def getTime1(self):
         return self.partidas
     def getTime1(self):

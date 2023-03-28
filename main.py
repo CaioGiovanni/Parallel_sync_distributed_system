@@ -1,11 +1,15 @@
-#from campeonato import *
-import campeonato
+from campeonato import *
+#import campeonato
 
 def main():
-    print("OI")
-    campeonato = campeonato()
+    campeonato = Campeonato()
+    #Cadastra Times
     campeonato.setTimes()
-    campeonato.getTimes()
+    #campeonato.listaTimesCadastrado()
+    #Prepara Rodadas
     campeonato.setRodadas()
-    campeonato.getRodadas()
+    #campeonato.getRodadas()
     return 0
+
+if __name__ == '__main__':
+    main()

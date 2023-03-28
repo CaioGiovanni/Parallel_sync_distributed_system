@@ -1,12 +1,13 @@
-#from rodada import *
+from rodada import *
+from times import *
+from partida import *
 import random
-import rodada
-import times
 
 class Campeonato:
     def __init__(self) -> None:
         self.times = []
-        self.rodadas = []
+        self.rodada = []
+        self.tabela = []
         self.classificacao = []
     pass
     #SET
@@ -14,32 +15,32 @@ class Campeonato:
         x = 1
         while x==1: 
             qtdTimes = input("Digite a quantidade de times neste campeonato: ")
-            if qtdTimes%2 != 0:
+            if int(qtdTimes) % 2 != 0:
                 print("Deve ter um número par de times.")
             else:
                 x=0
-        for y in qtdTimes:
-            nome = input("Nome do time "+y+": ")
-            time = times(nome)
+        for y in range(int(qtdTimes)):
+            nome = input("Nome do time: ")
+            time = Times(nome)
             self.times.append(time)
+        
+    def listaTimesCadastrado(self):
+        for x in self.times: 
+            print (x.getNome())
 
     def setRodadas(self):
-        qtdRodada = len(self.times) - 1
-
-        for x in qtdRodada:
-            for y in len(self.times)/2:
-                w = 1
-                repetido = []
-                while w == 1:
-                    a = random.randint(1,qtdRodada)
-                    b = random.randint(1,qtdRodada)
-                    if a!=b and (a in repetido) and (b in repetido):
-                        partida = partida(self.times[a],self.times[b])
-                        repetido.append(a)
-                        repetido.append(b)
-                        y=0
-                self.rodadas[x].append(partida)
-            
+        qtdRodada = len(self.times)
+        ultimo = len(self.times)-1
+        for x in range(int(qtdRodada)):
+            for y in range(int(len(self.times)/2)):
+                partida = Partida(self.times[y],self.times[ultimo])
+                self.rodada[x].append(partida)
+                ultimo = ultimo - 1
+            self.tabela[x].append(partida)
+    
+    def rodada(self):
+        for x in self.rodadas:
+            x.
     #GET
     def getTimes(self):
         return self.times
