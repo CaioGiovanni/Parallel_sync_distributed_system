@@ -2,14 +2,21 @@ import time
 import socket
 import keyboard
 import threading
+
 from random import randint
+
+chave = ['time1', 'time2', 'time3', 'time4']
+time_ganhador = []
+trigger_send_msg = False
 
 
 ##############  SERVER ###################
 
 
 clients = []
+servers = [('localhost', 7777), ('localhost', 5000)]
 stop_threads = False
+first_exec_connect = True
 
 
 def server_main():
@@ -27,11 +34,10 @@ def server_main():
             break
         client, addr = server.accept()
         clients.append(client)
-        if keyboard.is_pressed('q'):  # if key 'q' is pressed
-            print('You Pressed A Key!')
-            break  # finishing the loop
         thread = threading.Thread(target=messages_treatment, args=[client])
         thread.start()
+        if trigger_send_msg:
+            broadcast(str(time_ganhador).encode('utf-8'), client)
 
 
 def messages_treatment(client):
@@ -41,7 +47,10 @@ def messages_treatment(client):
             break
         try:
             msg = client.recv(2048)
-            broadcast(msg, client)
+            if 'Me mande a chave' in str(msg):
+                update_chave(str(time_ganhador).encode('utf-8'), client)
+            else:
+                broadcast(msg, client)
         except Exception as e:
             delete_client(client)
             break
@@ -56,27 +65,42 @@ def broadcast(msg, client):
                 delete_client(clientItem)
 
 
-##############  CLIENT ###################
+def update_chave(msg, client):
+    for clientItem in clients:
+        if clientItem == client:
+            try:
+                clientItem.send(msg)
+            except Exception as e:
+                delete_client(clientItem)
 
 
 def delete_client(client):
     clients.remove(client)
 
 
-def client_main():
+##############  CLIENT ###################
+
+
+def client_main(ip, host):
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     try:
-        client.connect(('localhost', 7777))
+        client.connect(('localhost', host))  # CONNECT TO FIRST EXEC
     except:
         return print('\nNao foi possível se conectar ao servidor\n')
     # username = input('Usuário: ')
     time.sleep(3)
-    username = str(randint(0, 9))
-    print('\nConectado!')
+    username = str(randint(0, 100))
+
+    if first_exec_connect:
+        request = 'Me mande a chave'
+    else:
+        request = None
+
+    print(f'\n{username} - Conectado!')
 
     thread1 = threading.Thread(target=receive_messages, args=[client])
-    thread2 = threading.Thread(target=send_messages, args=[client, username])
+    thread2 = threading.Thread(target=send_messages, args=[client, username, request])
 
     thread1.start()
     thread2.start()
@@ -89,7 +113,8 @@ def receive_messages(client):
             break
         try:
             msg = client.recv(2048).decode('utf-8')
-            print(msg + '\n')
+            if msg:
+                print(msg + '\n')
         except:
             print('\nNão foi possível permanacer conctado no servidor!\n')
             print('Precione <ENTER> para continuar...')
@@ -97,14 +122,15 @@ def receive_messages(client):
             break
 
 
-def send_messages(client, username):
+def send_messages(client, username, message=None):
     while True:
         global stop_threads
         if stop_threads:
             break
         try:
-            msg = input('\n')
-            client.send(f'<{username}> {msg}'.encode('utf-8'))
+            if message:
+                client.send(f'<{username}> {message}'.encode('utf-8'))
+                message = None
         except Exception as e:
             return
 
@@ -112,28 +138,50 @@ def send_messages(client, username):
 ##############  ALL ###################
 
 
-def close():
+def close_theads():
     while True:
         global stop_threads
         if stop_threads:
             break
         try:
             if keyboard.is_pressed('esc'):  # if key 'esc' is pressed
-                print('You Pressed A Key!')
+                print('Closing (maybe is required you to press ENTER to finish)')
                 stop_threads = True
         except:
-            print('Another key')
+            pass
 
 
+def run_champ():
+    contador = 0
+    while True:
+        global stop_threads
+        global trigger_send_msg
+        if stop_threads:
+            break
+        time.sleep(10)
+        contador += 1
+        time_ganhador.append('Random ' + str(contador))
+        trigger_send_msg = True
+
+
+thread_close = threading.Thread(target=close_theads)
 thread_server = threading.Thread(target=server_main)
-thread_client = threading.Thread(target=client_main)
 
-thread_all = threading.Thread(target=close)
+thread_champ = threading.Thread(target=run_champ)
+thread_client = threading.Thread(target=client_main, args=[None, 7777])
+thread_client2 = threading.Thread(target=client_main, args=[None, 7777])
 
-thread_all.start()
+
+thread_close.start()
 time.sleep(2)
 thread_server.start()
 time.sleep(2)
 thread_client.start()
+
+thread_champ.start()
+time.sleep(15)
+thread_client2.start()
+
 thread_server.join()
+thread_client.join()
 print('Finished')
