@@ -22,7 +22,9 @@ def server_main():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     try:
-        server.bind(servers_conectados[0])
+        hostname = socket.gethostname()
+        IPAddr = socket.gethostbyname(hostname)
+        server.bind((IPAddr, 7777))
         server.listen()
     except Exception as e:
         return print('\nNão foi possível iniciar o servidor!\n' + str(e))
