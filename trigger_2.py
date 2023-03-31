@@ -9,11 +9,11 @@ time_ganhador = []
 trigger_send_msg = False
 time_ganhador_atualizado = []
 
-##############  SERVER ###################
+############## SERVER ###################
 
 
 clients = []
-servers_conectados = [('localhost', 7777)]
+servers_conectados = [('192.168.0.72', 7777)]
 first_exec_connect = True
 
 
@@ -21,7 +21,7 @@ def server_main():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     try:
-        server.bind(('localhost', 7777))
+        server.bind(servers_conectados[0])
         server.listen()
     except Exception as e:
         return print('\nNão foi possível iniciar o servidor!\n' + str(e))
@@ -33,20 +33,17 @@ def server_main():
         thread.start()
 
 
-# def send_updates_to_clients(clients):
-#     while True:
-#         global trigger_send_msg
-#         if trigger_send_msg:
-#             broadcast(str(time_ganhador).encode('utf-8'), clients)
-#             trigger_send_msg = False
-
-
 def messages_treatment(client):
     while True:
         try:
             msg = client.recv(2048)
             if 'Me mande a chave + lista de clientes' in str(msg):
-                update_chave(str(time_ganhador).encode('utf-8'), client)
+                msg = msg.strip('Me mande a chave + lista de clientes:')
+                global servers_conectados
+                servers_conectados.append((msg, 7777))
+                update_chave(('Times:' + str(time_ganhador)).encode('utf-8'), client)
+                update_chave(('Servidores:' + str(servers_conectados)).encode('utf-8'), client)
+                broadcast(('Servidores:' + str(servers_conectados)).encode('utf-8'), client)
             else:
                 broadcast(msg, client)
         except Exception as e:
@@ -76,14 +73,17 @@ def delete_client(client):
     clients.remove(client)
 
 
-##############  CLIENT ###################
+############## CLIENT ###################
 
 
 def client_main(ip, host):
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     try:
-        client.connect(('localhost', host))  # CONNECT TO FIRST EXEC
+        if ip:
+            client.connect((ip, host))  # CONNECT TO FIRST EXEC
+        else:
+            client.connect(('localhost', host))
     except:
         return print('\nNao foi possível se conectar ao servidor\n')
     # username = input('Usuário: ')
@@ -92,7 +92,9 @@ def client_main(ip, host):
 
     global first_exec_connect
     if first_exec_connect:
-        request = 'Me mande a chave + lista de clientes'
+        hostname = socket.gethostname()
+        IPAddr = socket.gethostbyname(hostname)
+        request = f'Me mande a chave + lista de clientes:{IPAddr}'
         first_exec_connect = False
 
     else:
@@ -112,20 +114,35 @@ def receive_messages(client):
         try:
             msg = client.recv(2048).decode('utf-8')
             if msg:
+                global time_ganhador
                 global time_ganhador_atualizado
-                time_ganhador_atualizado = ast.literal_eval(msg)
-                print('Atualização: ' + str(time_ganhador_atualizado) + '\n')
+                if 'Times:' in msg:
+                    msg = str(msg).strip('Times:')
+                    time_ganhador_atualizado = ast.literal_eval(msg)
+                    print('Atualização: ' + str(time_ganhador_atualizado) + '\n')
+                else:
+                    msg = str(msg).strip('Servidores:')
+                    servers_conectados = ast.literal_eval(msg)
+                    print('Atualização: ' + str(servers_conectados) + '\n')
+                # if time_ganhador == time_ganahdor_atualizado
         except Exception as e:
             print('\nNão foi possível permanacer conctado no servidor!\n')
             print('Precione <ENTER> para continuar...')
             print(e)
-            client.close()
-            break
+            # client.close()
+            # break
+            pass
 
 
 def send_messages(client, username, message=None):
     while True:
         try:
+            global trigger_send_msg
+            if trigger_send_msg:
+                message = 'Times:' + str(time_ganhador)
+                client.send((message).encode('utf-8'))
+                trigger_send_msg = False
+                message = None
             if message:
                 client.send(f'<{username}> {message}'.encode('utf-8'))
                 message = None
@@ -139,7 +156,7 @@ def run_champ():
     contador = 0
     while True:
         global trigger_send_msg
-        time.sleep(1)
+        time.sleep(2)
         contador += 1
         time_ganhador.append('Random ' + str(contador))
         trigger_send_msg = True
@@ -148,16 +165,15 @@ def run_champ():
 thread_server = threading.Thread(target=server_main)
 
 thread_champ = threading.Thread(target=run_champ)
-thread_client = threading.Thread(target=client_main, args=[None, 7777])
-# thread_client2 = threading.Thread(target=client_main, args=[None, 7777])
-
+thread_client = threading.Thread(target=client_main, args=[servers_conectados[0][0], servers_conectados[0][1]])
+# thread_client2 = threading.Thread(target=client_main, args=[servers_conectados[0][0], servers_conectados[0][1]])
 
 thread_champ.start()
 thread_server.start()
 time.sleep(5)
 thread_client.start()
 
-# time.sleep(15)
+# time.sleep(5)
 # thread_client2.start()
 
 thread_server.join()
