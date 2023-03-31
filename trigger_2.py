@@ -1,3 +1,4 @@
+import re
 import ast
 import time
 import socket
@@ -38,15 +39,16 @@ def messages_treatment(client):
         try:
             msg = client.recv(2048)
             if 'Me mande a chave + lista de clientes' in str(msg):
-                msg = msg.strip('Me mande a chave + lista de clientes:')
+                msg = re.findall(r'[0-9]+(?:\.[0-9]+){3}', str(msg))
                 global servers_conectados
-                servers_conectados.append((msg, 7777))
+                servers_conectados.append((msg[0], 7777))
                 update_chave(('Times:' + str(time_ganhador)).encode('utf-8'), client)
                 update_chave(('Servidores:' + str(servers_conectados)).encode('utf-8'), client)
                 broadcast(('Servidores:' + str(servers_conectados)).encode('utf-8'), client)
             else:
                 broadcast(msg, client)
         except Exception as e:
+            raise e
             delete_client(client)
             break
 
@@ -116,6 +118,7 @@ def receive_messages(client):
             if msg:
                 global time_ganhador
                 global time_ganhador_atualizado
+                global servers_conectados
                 if 'Times:' in msg:
                     msg = str(msg).strip('Times:')
                     time_ganhador_atualizado = ast.literal_eval(msg)
@@ -138,13 +141,13 @@ def send_messages(client, username, message=None):
     while True:
         try:
             global trigger_send_msg
-            if trigger_send_msg:
-                message = 'Times:' + str(time_ganhador)
-                client.send((message).encode('utf-8'))
-                trigger_send_msg = False
-                message = None
             if message:
                 client.send(f'<{username}> {message}'.encode('utf-8'))
+                message = None
+            if trigger_send_msg:
+                message = 'Times:' + str(time_ganhador)
+                client.send(message.encode('utf-8'))
+                trigger_send_msg = False
                 message = None
         except Exception as e:
             return
