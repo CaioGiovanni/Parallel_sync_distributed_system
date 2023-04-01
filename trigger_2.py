@@ -15,6 +15,7 @@ time_ganhador_atualizado = []
 
 clients = []
 servers_conectados = [('192.168.0.72', 7777)]
+error_on_server = False
 first_exec_connect = True
 
 
@@ -41,9 +42,10 @@ def messages_treatment(client):
         try:
             msg = client.recv(2048)
             if 'Me mande a chave + lista de clientes' in str(msg):
-                msg = re.findall(r'[0-9]+(?:\.[0-9]+){3}', str(msg))
+                msg = re.findall(r'[0-9]+(?:\.[0-9]+){3}', str(msg))[0]
                 global servers_conectados
-                servers_conectados.append((msg[0], 7777))
+                if msg and (msg, 7777) not in servers_conectados:
+                    servers_conectados.append((msg, 7777))
                 update_chave(('Times:' + str(time_ganhador)).encode('utf-8'), client)
                 update_chave(('Servidores:' + str(servers_conectados)).encode('utf-8'), client)
                 broadcast(('Servidores:' + str(servers_conectados)).encode('utf-8'), client)
@@ -88,9 +90,10 @@ def client_main(ip, host):
             client.connect((ip, host))  # CONNECT TO FIRST EXEC
         else:
             client.connect(('localhost', host))
-    except:
+    except Exception as e:
+        global error_on_server
+        error_on_server = True
         return print('\nNao foi possível se conectar ao servidor\n')
-    # username = input('Usuário: ')
     time.sleep(3)
     username = str(randint(0, 100))
 
@@ -100,7 +103,6 @@ def client_main(ip, host):
         IPAddr = socket.gethostbyname(hostname)
         request = f'Me mande a chave + lista de clientes:{IPAddr}'
         first_exec_connect = False
-
     else:
         request = None
 
@@ -134,15 +136,16 @@ def receive_messages(client):
                     for temp in temporary:
                         if temp not in servers_conectados:
                             servers_conectados.append(temp)
-                    print(f'Atualização: {socket.gethostname()}' + str(servers_conectados) + '\n')
-                # if time_ganhador == time_ganahdor_atualizado
+                    print(f'Atualização {socket.gethostname()}:' + str(servers_conectados) + '\n')
         except Exception as e:
             print('\nNão foi possível permanacer conctado no servidor!\n')
             print('Precione <ENTER> para continuar...')
             print(e)
+            global error_on_server
+            error_on_server = True
             # client.close()
             # break
-            pass
+            raise e
 
 
 def send_messages(client, username, message=None):
@@ -173,20 +176,19 @@ def run_champ():
         trigger_send_msg = True
 
 
-thread_server = threading.Thread(target=server_main)
-
 thread_champ = threading.Thread(target=run_champ)
-thread_client = threading.Thread(target=client_main, args=[servers_conectados[0][0], servers_conectados[0][1]])
-# thread_client2 = threading.Thread(target=client_main, args=[servers_conectados[0][0], servers_conectados[0][1]])
-
+thread_server = threading.Thread(target=server_main)
 thread_champ.start()
 thread_server.start()
-time.sleep(5)
-thread_client.start()
 
-# time.sleep(5)
-# thread_client2.start()
+time.sleep(1)
+for server in servers_conectados:
+    thread_client = threading.Thread(target=client_main, args=[server[0], server[1]])
+    thread_client.start()
+    thread_client.join()
+    print('teste')
+    if not error_on_server:
+        break
+    error_on_server = False
 
-thread_server.join()
-thread_client.join()
 print('Finished')
