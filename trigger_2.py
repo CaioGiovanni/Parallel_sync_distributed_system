@@ -8,13 +8,12 @@ from random import randint
 
 time_ganhador = []
 trigger_send_msg = False
-time_ganhador_atualizado = []
 
 ############## SERVER ###################
 
 
 clients = []
-servers_conectados = [('192.168.0.61', 7777)]
+servers_conectados = [('192.168.0.72', 7777)]
 error_on_server = False
 first_exec_connect = True
 
@@ -123,15 +122,14 @@ def receive_messages(client):
             msg = client.recv(2048).decode('utf-8')
             if msg:
                 global time_ganhador
-                global time_ganhador_atualizado
                 global servers_conectados
                 if 'Times:' in msg:
                     msg = str(msg).strip('Times:')
                     temporary = ast.literal_eval(msg)
                     for temp in temporary:
-                        if temp not in time_ganhador_atualizado:
-                            time_ganhador_atualizado.append(temp)
-                    print(f'Atualização {socket.gethostname()}: ' + str(time_ganhador_atualizado) + '\n')
+                        if temp not in time_ganhador:
+                            time_ganhador.append(temp)
+                    print(f'Atualização {socket.gethostname()}: ' + str(time_ganhador) + '\n')
                 else:
                     msg = str(msg).strip('Servidores:')
                     temporary = ast.literal_eval(msg)
@@ -171,13 +169,12 @@ def send_messages(client, username, message=None):
 ##############  ALL ###################
 
 def run_champ():
-    contador = 0
     while True:
         global trigger_send_msg
         time.sleep(2)
-        contador += 1
-        time_ganhador.append('Random ' + str(contador))
+        time_ganhador.append('Random ' + str(randint(0, 1000000)))
         trigger_send_msg = True
+        print(time_ganhador)
 
 
 thread_champ = threading.Thread(target=run_champ)
@@ -190,7 +187,6 @@ for server in servers_conectados:
     thread_client = threading.Thread(target=client_main, args=[server[0], server[1]])
     thread_client.start()
     thread_client.join()
-    print('teste')
     if not error_on_server:
         break
     error_on_server = False
