@@ -123,12 +123,18 @@ def receive_messages(client):
                 global servers_conectados
                 if 'Times:' in msg:
                     msg = str(msg).strip('Times:')
-                    time_ganhador_atualizado = ast.literal_eval(msg)
-                    print('Atualização: ' + str(time_ganhador_atualizado) + '\n')
+                    temporary = ast.literal_eval(msg)
+                    for temp in temporary:
+                        if temp not in time_ganhador_atualizado:
+                            time_ganhador_atualizado.append(temp)
+                    print(f'Atualização {socket.gethostname()}: ' + str(time_ganhador_atualizado) + '\n')
                 else:
                     msg = str(msg).strip('Servidores:')
-                    servers_conectados = ast.literal_eval(msg)
-                    print('Atualização: ' + str(servers_conectados) + '\n')
+                    temporary = ast.literal_eval(msg)
+                    for temp in temporary:
+                        if temp not in servers_conectados:
+                            servers_conectados.append(temp)
+                    print(f'Atualização: {socket.gethostname()}' + str(servers_conectados) + '\n')
                 # if time_ganhador == time_ganahdor_atualizado
         except Exception as e:
             print('\nNão foi possível permanacer conctado no servidor!\n')
