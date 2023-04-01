@@ -14,7 +14,7 @@ time_ganhador_atualizado = []
 
 
 clients = []
-servers_conectados = [('192.168.0.72', 7777)]
+servers_conectados = [('192.168.0.61', 7777)]
 error_on_server = False
 first_exec_connect = True
 
@@ -113,6 +113,8 @@ def client_main(ip, host):
 
     thread1.start()
     thread2.start()
+    thread1.join()
+    thread2.join()
 
 
 def receive_messages(client):
@@ -137,6 +139,8 @@ def receive_messages(client):
                         if temp not in servers_conectados:
                             servers_conectados.append(temp)
                     print(f'Atualização {socket.gethostname()}:' + str(servers_conectados) + '\n')
+        except SyntaxError:
+            pass
         except Exception as e:
             print('\nNão foi possível permanacer conctado no servidor!\n')
             print('Precione <ENTER> para continuar...')
