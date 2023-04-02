@@ -1,3 +1,4 @@
+from re import A
 import time
 import random
 
@@ -30,7 +31,7 @@ def jogo(partida):
     print("----PARTIDA----")
     print(time1[0] + " X " + time2[0])
     print("---------------")
-    while tempo_atual - tempo_inicial < 20:
+    while tempo_atual - tempo_inicial < 10:
 
         if int(tempo_atual - tempo_inicial) in tempoAtualizacao:
             evento, equipe = eventosPartidas(time1[0],time2[0])
@@ -62,7 +63,8 @@ def realizaPartida(partida,time1,time2,classificacao,historicoPartida):
     time1, time2 = pontuaTime(time1, time2, statusPartida)
     partidaInfo = [time1[0],golTime_1,time2[0],golTime_2]
     historicoPartida.append(partidaInfo)
-    #exibeClassificacao(classificacao)
+    classificacao = exibeClassificacao(classificacao)
+    return time1, time2,classificacao
 
 #PONTUA TIME
 def pontuaTime(Time1,Time2,status):
@@ -86,6 +88,7 @@ def exibeClassificacao (classificacao):
         i = i + 1
         print(str(i) + "-" + x[0] + " pontos: " + str(x[1]) + " qtd de gols: " + str(x[2]))
     print("---------------------------------")
+    return classificacao
 
 def exibeHistorico (historicoPartida):
     i = 1
@@ -97,6 +100,7 @@ def exibeHistorico (historicoPartida):
             print("RODADA " + str(a))
         print(x[0] + " " + str(x[1]) + "  X  " + str(x[3]) + " " + str(x[2]))
         i = i+1
+
 
 def main():
     #-------------------------------------
@@ -114,67 +118,61 @@ def main():
     #RODADA1
     print("--------------------RODADA 1--------------------")
     Partida1A= [timeA, timeB]
-    realizaPartida(Partida1A,timeA,timeB,classificacao,historicoPartida) #Maquina1
+    timeA,timeB,classificacao = realizaPartida(Partida1A,timeA,timeB,classificacao,historicoPartida) #Maquina1
 
     Partida1B= [timeC, timeD]
-    realizaPartida(Partida1B,timeC,timeD,classificacao,historicoPartida) #Maquina2
+    timeC,timeD,classificacao = realizaPartida(Partida1B,timeC,timeD,classificacao,historicoPartida) #Maquina2
 
     Partida1C= [timeE, timeF]
-    realizaPartida(Partida1C,timeE,timeF,classificacao,historicoPartida) #Maquina3
-
-    exibeClassificacao(classificacao)
+    timeE,timeF,classificacao = realizaPartida(Partida1C,timeE,timeF,classificacao,historicoPartida) #Maquina3
     exibeHistorico (historicoPartida)
     #-------------------------------------
     print("--------------------RODADA 2--------------------")
-    Partida2A= [timeA, timeC]
-    realizaPartida(Partida2A,timeA,timeC,classificacao,historicoPartida) #Maquina1
+    Partida2A = [timeA, timeC]
+    timeA,timeC,classificacao = realizaPartida(Partida2A,timeA,timeC,classificacao,historicoPartida) #Maquina1
 
-    Partida2B= [timeD, timeE]
-    realizaPartida(Partida2B,timeD,timeE,classificacao,historicoPartida) #Maquina2
+    Partida2B = [timeD, timeE]
+    timeD,timeE,classificacao = realizaPartida(Partida2B,timeD,timeE,classificacao,historicoPartida) #Maquina2
     
-    Partida2C= [timeF, timeB]
-    realizaPartida(Partida2C,timeF,timeB,classificacao,historicoPartida) #Maquina2
+    Partida2C = [timeF, timeB]
+    timeF,timeB,classificacao = realizaPartida(Partida2C,timeF,timeB,classificacao,historicoPartida) #Maquina2
 
-    exibeClassificacao(classificacao)
     exibeHistorico (historicoPartida)
     #-------------------------------------
     print("--------------------RODADA 3--------------------")
     Partida3A= [timeA, timeD]
-    realizaPartida(Partida3A,timeA,timeD,classificacao,historicoPartida) #Maquina1
+    timeA,timeD,classificacao = realizaPartida(Partida3A,timeA,timeD,classificacao,historicoPartida) #Maquina1
 
     Partida3B= [timeE, timeB]
-    realizaPartida(Partida3B,timeE,timeB,classificacao,historicoPartida) #Maquina2
+    timeE,timeB,classificacao = realizaPartida(Partida3B,timeE,timeB,classificacao,historicoPartida) #Maquina2
 
     Partida3C= [timeC, timeF]
-    realizaPartida(Partida3C,timeC,timeF,classificacao,historicoPartida) #Maquina3
+    timeC,timeF,classificacao = realizaPartida(Partida3C,timeC,timeF,classificacao,historicoPartida) #Maquina3
 
-    exibeClassificacao(classificacao)
     exibeHistorico (historicoPartida)
     #-------------------------------------
     print("--------------------RODADA 4--------------------")  
     Partida4A= [timeA, timeE]
-    realizaPartida(Partida4A,timeA,timeE,classificacao,historicoPartida) #Maquina1
+    timeA,timeE,classificacao = realizaPartida(Partida4A,timeA,timeE,classificacao,historicoPartida) #Maquina1
 
     Partida4B= [timeB, timeC]
-    realizaPartida(Partida4B,timeB,timeC,classificacao,historicoPartida) #Maquina2
+    timeB,timeC,classificacao = realizaPartida(Partida4B,timeB,timeC,classificacao,historicoPartida) #Maquina2
 
     Partida4C= [timeD, timeF]
-    realizaPartida(Partida4C,timeD,timeF,classificacao,historicoPartida) #Maquina3
+    timeD,timeF,classificacao = realizaPartida(Partida4C,timeD,timeF,classificacao,historicoPartida) #Maquina3
 
-    exibeClassificacao(classificacao)
     exibeHistorico (historicoPartida)
     #-------------------------------------
     print("--------------------RODADA 5--------------------")
     Partida5A= [timeA, timeF]
-    realizaPartida(Partida5A,timeA,timeF,classificacao,historicoPartida) #Maquina1
+    timeA,timeF,classificacao = realizaPartida(Partida5A,timeA,timeF,classificacao,historicoPartida) #Maquina1
 
     Partida5B= [timeB, timeD]
-    realizaPartida(Partida5B,timeB,timeD,classificacao,historicoPartida) #Maquina2
+    timeB,timeD,classificacao = realizaPartida(Partida5B,timeB,timeD,classificacao,historicoPartida) #Maquina2
 
     Partida5C= [timeC, timeE]
-    realizaPartida(Partida5C,timeC,timeE,classificacao,historicoPartida) #Maquina3
+    timeC,timeE,classificacao = realizaPartida(Partida5C,timeC,timeE,classificacao,historicoPartida) #Maquina3
     
-    exibeClassificacao(classificacao)
     exibeHistorico (historicoPartida)
     #-------------------------------------
 
