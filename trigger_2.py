@@ -10,12 +10,12 @@ from random import randint
 
 ############## DADOS DA PARTIDA ###################
 
-timeA = ("TimeA", 0, 0)
-timeB = ("TimeB", 0, 0)
-timeC = ("TimeC", 0, 0)
-timeD = ("TimeD", 0, 0)
-timeE = ("TimeE", 0, 0)
-timeF = ("TimeF", 0, 0)
+timeA = ["TimeA", 0, 0]
+timeB = ["TimeB", 0, 0]
+timeC = ["TimeC", 0, 0]
+timeD = ["TimeD", 0, 0]
+timeE = ["TimeE", 0, 0]
+timeF = ["TimeF", 0, 0]
 
 classificacao = [timeA, timeB, timeC, timeD, timeE, timeF]
 historicoPartida = []
