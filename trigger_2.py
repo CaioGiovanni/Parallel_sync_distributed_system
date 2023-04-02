@@ -63,7 +63,8 @@ def messages_treatment(client):
                 global servers_conectados
                 if msg and (msg, 7777) not in servers_conectados:
                     servers_conectados.append((msg, 7777))
-                update_chave(('Times:' + str(time_ganhador)).encode('utf-8'), client)
+                update_chave(('Times jogando:' + str(partidas_rodando)).encode('utf-8'), client)
+                update_chave(('Updating:' + str([classificacao, historicoPartida, partidas, timeA, timeB, timeC, timeD, timeE, timeF])).encode('utf-8'), client)
                 update_chave(('Servidores:' + str(servers_conectados)).encode('utf-8'), client)
                 broadcast(('Servidores:' + str(servers_conectados)).encode('utf-8'), client)
             else:
@@ -136,6 +137,15 @@ def client_main(ip, host):
 
 def receive_messages(client):
     while True:
+        global classificacao
+        global historicoPartida
+        global partidas
+        global timeA
+        global timeB
+        global timeC
+        global timeD
+        global timeE
+        global timeF
         try:
             msg = client.recv(2048).decode('utf-8')
             if msg:
@@ -152,30 +162,33 @@ def receive_messages(client):
                     msg = str(msg).strip('Finished:')
                     temporary = ast.literal_eval(msg)
                     ##### BEFORE CLASSIFICATION ####
-                    global classificacao
-                    global historicoPartida
-                    global partidas
-                    global timeA
-                    global timeB
-                    global timeC
-                    global timeD
-                    global timeE
-                    global timeF
-                    global partidas_rodando
                     classificacao = temporary[0]
-                    historicoPartida = temporary[0]
-                    partidas = temporary[0]
-                    timeA = temporary[0]
-                    timeB = temporary[0]
-                    timeC = temporary[0]
-                    timeD = temporary[0]
-                    timeE = temporary[0]
-                    timeF = temporary[0]
-                    classificacao = temporary[0]
-                    historicoPartida = temporary[0]
+                    historicoPartida = temporary[1]
+                    partidas = temporary[2]
+                    timeA = temporary[3]
+                    timeB = temporary[4]
+                    timeC = temporary[5]
+                    timeD = temporary[6]
+                    timeE = temporary[7]
+                    timeF = temporary[8]
                     for pr in partidas_rodando:
-                        if pr[1] == IPAddr:
+                        if pr[1] == temporary[9]:
                             partidas_rodando.remove(pr)
+                            break
+                    print(f'Atualização {socket.gethostname()}: ' + str(partidas_rodando) + '\n')
+                elif 'Updating:' in msg:
+                    msg = str(msg).strip('Updating:')
+                    temporary = ast.literal_eval(msg)
+                    ##### BEFORE CLASSIFICATION ####
+                    classificacao = temporary[0]
+                    historicoPartida = temporary[1]
+                    partidas = temporary[2]
+                    timeA = temporary[3]
+                    timeB = temporary[4]
+                    timeC = temporary[5]
+                    timeD = temporary[6]
+                    timeE = temporary[7]
+                    timeF = temporary[8]
                     print(f'Atualização {socket.gethostname()}: ' + str(partidas_rodando) + '\n')
                 else:
                     msg = str(msg).strip('Servidores:')
@@ -260,6 +273,7 @@ def run_champ():
                         timeF = xp
 
                 print('Finished: ' + str(p))
+                partidas_rodando.remove((p, IPAddr))
                 trigger_send_msg_finished_game = True
                 break
 
