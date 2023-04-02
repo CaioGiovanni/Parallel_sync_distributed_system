@@ -103,6 +103,7 @@ def exibeHistorico (historicoPartida):
 
 
 def main():
+    print("TesteGit")
     #-------------------------------------
     #TIMES [Nome, pontos, qtdGols]
     timeA = ["TimeA",0,0]
