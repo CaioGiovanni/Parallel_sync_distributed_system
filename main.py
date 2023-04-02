@@ -24,25 +24,27 @@ def jogo(partida):
     golTime_2 = 0
     statusPartida = 0
 
-    tempo_inicial = time.time()
-    tempo_atual = time.time()
-    tempoAtualizacao = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]
+    # tempo_inicial = time.time()
+    # tempo_atual = time.time()
+    # tempoAtualizacao = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]
 
     print("----PARTIDA----")
     print(time1[0] + " X " + time2[0])
     print("---------------")
-    while tempo_atual - tempo_inicial < 10:
+    # while tempo_atual - tempo_inicial < 10:
+    for _ in range(10):
+        #### ADDED TIME ####
+        time.sleep(2)
+        # if int(tempo_atual - tempo_inicial) in tempoAtualizacao:
+        evento, equipe = eventosPartidas(time1[0],time2[0])
+        if equipe == time1[0]:
+            golTime_1 = golTime_1 + 1
+        elif equipe == time2[0]:
+            golTime_2 = golTime_2 + 1
+        print(evento)
+        # tempoAtualizacao.pop(0)
 
-        if int(tempo_atual - tempo_inicial) in tempoAtualizacao:
-            evento, equipe = eventosPartidas(time1[0],time2[0])
-            if equipe == time1[0]:
-                golTime_1 = golTime_1 + 1
-            elif equipe == time2[0]:
-                golTime_2 = golTime_2 + 1
-            print(evento)
-            tempoAtualizacao.pop(0)
-
-        tempo_atual = time.time()
+        # tempo_atual = time.time()
 
     print("FIM DA PARTIDA")
     print("RESULTADO")

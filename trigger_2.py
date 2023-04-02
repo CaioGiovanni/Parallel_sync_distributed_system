@@ -25,8 +25,10 @@ partidas_rodando = []
 
 trigger_send_msg = False
 trigger_send_msg_finished_game = False
+start_champ = False
 
 ############## SERVER ###################
+
 hostname = socket.gethostname()
 IPAddr = socket.gethostbyname(hostname)
 
@@ -116,11 +118,13 @@ def client_main(ip, host):
     username = str(randint(0, 100))
 
     global first_exec_connect
+    global start_champ
     if first_exec_connect:
         hostname = socket.gethostname()
         IPAddr = socket.gethostbyname(hostname)
         request = f'Me mande a chave + lista de clientes:{IPAddr}'
         first_exec_connect = False
+        start_champ = True
     else:
         request = None
 
@@ -157,7 +161,7 @@ def receive_messages(client):
                     for temp in temporary:
                         if temp not in partidas_rodando:
                             partidas_rodando.append(temp)
-                    print(f'Atualização {socket.gethostname()}: ' + str(partidas_rodando) + '\n')
+                    print(f'Atualização "Actual teams" {socket.gethostname()}: ' + str(partidas_rodando) + '\n')
                 elif 'Finished:' in msg:
                     msg = str(msg).strip('Finished:')
                     temporary = ast.literal_eval(msg)
@@ -175,7 +179,7 @@ def receive_messages(client):
                         if pr[1] == temporary[9]:
                             partidas_rodando.remove(pr)
                             break
-                    print(f'Atualização {socket.gethostname()}: ' + str(partidas_rodando) + '\n')
+                    print(f'Atualização "Finished" {socket.gethostname()}: ' + str(partidas_rodando) + '\n')
                 elif 'Updating:' in msg:
                     msg = str(msg).strip('Updating:')
                     temporary = ast.literal_eval(msg)
@@ -189,7 +193,7 @@ def receive_messages(client):
                     timeD = temporary[6]
                     timeE = temporary[7]
                     timeF = temporary[8]
-                    print(f'Atualização {socket.gethostname()}: ' + str(partidas_rodando) + '\n')
+                    print(f'Atualização "updating" {socket.gethostname()}: ' + str(partidas_rodando) + '\n')
                 else:
                     msg = str(msg).strip('Servidores:')
                     temporary = ast.literal_eval(msg)
@@ -237,6 +241,7 @@ def send_messages(client, username, message=None):
 
 def run_champ():
     while True:
+        global start_champ
         global trigger_send_msg
         global trigger_send_msg_finished_game
         global timeA
@@ -246,42 +251,44 @@ def run_champ():
         global timeE
         global timeF
 
-        for p in partidas:
-            not_running_bool = True
-            for pr in partidas_rodando:
-                if p == pr[0]:
-                    not_running_bool = False
+        if start_champ:
+            for p in partidas:
+                not_running_bool = True
+                for pr in partidas_rodando:
+                    if p == pr[0]:
+                        not_running_bool = False
 
-            if not_running_bool:
-                global classificacao
-                global IPAddr
-                partidas_rodando.append((p, IPAddr))
-                trigger_send_msg = True
-                p[0], p[1], classificacao = main.realizaPartida(p, p[0], p[1], classificacao, historicoPartida)
-                for xp in p:
-                    if xp[0] == 'TimeA':
-                        timeA = xp
-                    if xp[0] == 'TimeB':
-                        timeB = xp
-                    if xp[0] == 'TimeC':
-                        timeC = xp
-                    if xp[0] == 'TimeD':
-                        timeD = xp
-                    if xp[0] == 'TimeE':
-                        timeE = xp
-                    if xp[0] == 'TimeF':
-                        timeF = xp
+                if not_running_bool:
+                    global classificacao
+                    global IPAddr
+                    partidas_rodando.append((p, IPAddr))
+                    trigger_send_msg = True
+                    p[0], p[1], classificacao = main.realizaPartida(p, p[0], p[1], classificacao, historicoPartida)
+                    for xp in p:
+                        if xp[0] == 'TimeA':
+                            timeA = xp
+                        if xp[0] == 'TimeB':
+                            timeB = xp
+                        if xp[0] == 'TimeC':
+                            timeC = xp
+                        if xp[0] == 'TimeD':
+                            timeD = xp
+                        if xp[0] == 'TimeE':
+                            timeE = xp
+                        if xp[0] == 'TimeF':
+                            timeF = xp
 
-                print('Finished: ' + str(p))
-                partidas_rodando.remove((p, IPAddr))
-                trigger_send_msg_finished_game = True
-                break
+                    print('Finished: ' + str(p))
+                    partidas_rodando.remove((p, IPAddr))
+                    partidas.remove(p)
+                    trigger_send_msg_finished_game = True
+                    break
 
 
 thread_champ = threading.Thread(target=run_champ)
 thread_server = threading.Thread(target=server_main)
-thread_champ.start()
 thread_server.start()
+thread_champ.start()
 
 time.sleep(1)
 for server in servers_conectados:
