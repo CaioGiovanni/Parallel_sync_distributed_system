@@ -263,6 +263,7 @@ def run_champ():
                     global IPAddr
                     partidas_rodando.append((p, IPAddr))
                     trigger_send_msg = True
+                    original_p = p
                     p[0], p[1], classificacao = main.realizaPartida(p, p[0], p[1], classificacao, historicoPartida)
                     for xp in p:
                         if xp[0] == 'TimeA':
@@ -280,7 +281,7 @@ def run_champ():
 
                     print('Finished: ' + str(p))
                     partidas_rodando.remove((p, IPAddr))
-                    partidas.remove(p)
+                    partidas.remove(original_p)
                     trigger_send_msg_finished_game = True
                     break
 
