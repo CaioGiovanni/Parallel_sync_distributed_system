@@ -20,7 +20,7 @@ timeF = ["TimeF", 0, 0]
 classificacao = [timeA, timeB, timeC, timeD, timeE, timeF]
 historicoPartida = []
 
-partidas = [(timeA, timeB), (timeC, timeD), (timeE, timeF), (timeA, timeC)]
+partidas = [[timeA, timeB], [timeC, timeD], [timeE, timeF], [timeA, timeC]]
 partidas_rodando = []
 
 trigger_send_msg = False
