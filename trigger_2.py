@@ -280,8 +280,11 @@ def run_champ():
                             timeF = xp
 
                     print('Finished: ' + str(p))
-                    partidas_rodando.remove((p, IPAddr))
-                    partidas.remove(original_p)
+                    partidas_rodando.remove((original_p, IPAddr))
+                    try:
+                        partidas.remove(original_p)
+                    except Exception as e:
+                        pass
                     trigger_send_msg_finished_game = True
                     break
 
