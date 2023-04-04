@@ -308,9 +308,10 @@ def run_champ():
                     for partida_temp in partidas:
                         if partida_temp[0][0] == p[0][0] and partida_temp[1][0] == p[1][0]:
                             partidas.remove(partida_temp)
-                            for x_1 in partidas_1:
-                                if partida_temp[0][0] == x_1[0][0] and partida_temp[1][0] == x_1[1][0]:
-                                    partidas = partidas_2
+                            if not partidas:
+                                for x_1 in partidas_1:
+                                    if partida_temp[0][0] == x_1[0][0] and partida_temp[1][0] == x_1[1][0]:
+                                        partidas = partidas_2
                             break
                     trigger_send_msg_finished_game = True
                     break
