@@ -148,6 +148,7 @@ def receive_messages(client):
         global start_champ
         global classificacao
         global historicoPartida
+        global servers_conectados
         global partidas
         global timeA
         global timeB
