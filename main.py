@@ -61,15 +61,14 @@ def jogo(partida):
     return golTime_1, golTime_2, statusPartida
 
 
-def realizaPartida(partida, time1, time2, classificacao, historicoPartida):
+def realizaPartida(partida, time1, time2, historicoPartida):
     golTime_1, golTime_2, statusPartida = jogo(partida)
     time1[2] = time1[2] + golTime_1
     time2[2] = time2[2] + golTime_2
     time1, time2 = pontuaTime(time1, time2, statusPartida)
     partidaInfo = [time1[0], golTime_1, time2[0], golTime_2]
     historicoPartida.append(partidaInfo)
-    classificacao = exibeClassificacao(classificacao)
-    return time1, time2, classificacao
+    return time1, time2
 
 
 # PONTUA TIME

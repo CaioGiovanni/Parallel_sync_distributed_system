@@ -275,7 +275,7 @@ def run_champ():
                     partidas_rodando.append((p, IPAddr))
                     trigger_send_msg = True
                     original_p = p
-                    p[0], p[1], classificacao = main.realizaPartida(p, p[0], p[1], classificacao, historicoPartida)
+                    p[0], p[1] = main.realizaPartida(p, p[0], p[1], historicoPartida)
                     for xp in p:
                         if xp[0] == 'TimeA':
                             timeA = xp
@@ -289,6 +289,8 @@ def run_champ():
                             timeE = xp
                         if xp[0] == 'TimeF':
                             timeF = xp
+                    classificacao = [timeA, timeB, timeC, timeD, timeE, timeF]
+                    classificacao = main.exibeClassificacao(classificacao)
 
                     print('Finished: ' + str(p))
                     partidas_rodando.remove((original_p, IPAddr))
@@ -299,6 +301,7 @@ def run_champ():
                     trigger_send_msg_finished_game = True
                     break
             if not partidas:
+                time.sleep(30)
                 print('Partidas finalizadas\n')
                 print(classificacao)
                 break
