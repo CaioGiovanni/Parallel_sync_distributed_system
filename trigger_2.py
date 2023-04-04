@@ -124,7 +124,6 @@ def client_main(ip, host):
         IPAddr = socket.gethostbyname(hostname)
         request = f'Me mande a chave + lista de clientes:{IPAddr}'
         first_exec_connect = False
-        start_champ = True
     else:
         request = None
 
@@ -141,6 +140,7 @@ def client_main(ip, host):
 
 def receive_messages(client):
     while True:
+        global start_champ
         global classificacao
         global historicoPartida
         global partidas
@@ -162,6 +162,7 @@ def receive_messages(client):
                         if temp not in partidas_rodando:
                             partidas_rodando.append(temp)
                     print(f'Atualização "Actual teams" {socket.gethostname()}: ' + str(partidas_rodando) + '\n')
+                    start_champ = True
                 elif 'Finished:' in msg:
                     msg = str(msg).strip('Finished:')
                     temporary = ast.literal_eval(msg)
@@ -194,6 +195,7 @@ def receive_messages(client):
                     timeE = temporary[7]
                     timeF = temporary[8]
                     print(f'Atualização "updating" {socket.gethostname()}: ' + str(partidas_rodando) + '\n')
+                    start_champ = True
                 else:
                     msg = str(msg).strip('Servidores:')
                     temporary = ast.literal_eval(msg)
