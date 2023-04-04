@@ -37,7 +37,7 @@ hostname = socket.gethostname()
 IPAddr = socket.gethostbyname(hostname)
 
 clients = []
-servers_conectados = [('192.168.0.61', 7777)]
+servers_conectados = [('192.168.0.72', 7777)]
 error_on_server = False
 first_exec_connect = True
 
@@ -162,7 +162,22 @@ def receive_messages(client):
             msg = client.recv(2048).decode('utf-8')
             if msg:
                 global servers_conectados
-                if 'Times jogando:' in msg:
+                possibilites = ['Times jogando', 'Finished', 'Updating', 'Servidores']
+                conected_msgs = dict()
+                conected_msgs[possibilites[0]] = None
+                conected_msgs[possibilites[1]] = None
+                conected_msgs[possibilites[2]] = None
+                conected_msgs[possibilites[3]] = None
+                conected_msgs_temp = str(msg).split(':')
+                if len(conected_msgs_temp) > 2:
+                    for i, cm_temp in enumerate(conected_msgs_temp):
+                        for possibilite in possibilites:
+                            if possibilite in cm_temp:
+                                conected_msgs[possibilite] = conected_msgs_temp[i + 1].split(possibilite[0])[0].split(possibilite[1])[0].split(possibilite[2])[0].split(possibilite[3])[0]
+
+                if 'Times jogando:' in msg or conected_msgs[possibilites[0]]:
+                    if conected_msgs[possibilites[0]]:
+                        msg = conected_msgs[possibilites[0]]
                     msg = str(msg).strip('Times jogando:')
                     temporary = ast.literal_eval(msg)
                     for temp in temporary:
@@ -170,7 +185,9 @@ def receive_messages(client):
                             partidas_rodando.append(temp)
                     print(f'Atualização "Actual teams" {socket.gethostname()}: ' + str(partidas_rodando) + '\n')
                     start_champ = True
-                elif 'Finished:' in msg:
+                if 'Finished:' in msg or conected_msgs[possibilites[1]]:
+                    if conected_msgs[possibilites[1]]:
+                        msg = conected_msgs[possibilites[1]]
                     msg = str(msg).strip('Finished:')
                     temporary = ast.literal_eval(msg)
                     ##### BEFORE CLASSIFICATION ####
@@ -196,7 +213,9 @@ def receive_messages(client):
                             break
                     print(f'Atualização partidas "Finished" {socket.gethostname()}: ' + str(partidas) + '\n')
                     print(f'Atualização partidas rodando "Finished" {socket.gethostname()}: ' + str(partidas_rodando) + '\n')
-                elif 'Updating:' in msg:
+                if 'Updating:' in msg or conected_msgs[possibilites[2]]:
+                    if conected_msgs[possibilites[2]]:
+                        msg = conected_msgs[possibilites[2]]
                     msg = str(msg).strip('Updating:')
                     temporary = ast.literal_eval(msg)
                     ##### BEFORE CLASSIFICATION ####
@@ -211,15 +230,15 @@ def receive_messages(client):
                     timeF = temporary[8]
                     print(f'Atualização "updating" {socket.gethostname()}: ' + str(partidas_rodando) + '\n')
                     start_champ = True
-                else:
+                if 'Servidores:' in msg or conected_msgs[possibilites[3]]:
+                    if conected_msgs[possibilites[3]]:
+                        msg = conected_msgs[possibilites[3]]
                     msg = str(msg).strip('Servidores:')
                     temporary = ast.literal_eval(msg)
                     for temp in temporary:
                         if temp not in servers_conectados:
                             servers_conectados.append(temp)
                     print(f'Atualização {socket.gethostname()}:' + str(servers_conectados) + '\n')
-        except SyntaxError:
-            pass
         except Exception as e:
             print('\nNão foi possível permanacer conctado no servidor!\n')
             print('Precione <ENTER> para continuar...')
