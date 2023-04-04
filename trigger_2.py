@@ -170,19 +170,20 @@ def receive_messages(client):
                     ##### BEFORE CLASSIFICATION ####
                     historicoPartida = temporary[1]
                     partidas = temporary[2]
-                    if timeA[1] < temporary[3][1] and timeA[2] < temporary[3][2]:
+                    if timeA[1] < temporary[3][1] or timeA[2] < temporary[3][2]:
                         timeA = temporary[3]
-                    if timeB[1] < temporary[4][1] and timeB[2] < temporary[4][2]:
+                    if timeB[1] < temporary[4][1] or timeB[2] < temporary[4][2]:
                         timeB = temporary[4]
-                    if timeC[1] < temporary[5][1] and timeC[2] < temporary[5][2]:
+                    if timeC[1] < temporary[5][1] or timeC[2] < temporary[5][2]:
                         timeC = temporary[5]
-                    if timeD[1] < temporary[6][1] and timeD[2] < temporary[6][2]:
+                    if timeD[1] < temporary[6][1] or timeD[2] < temporary[6][2]:
                         timeD = temporary[6]
-                    if timeE[1] < temporary[7][1] and timeE[2] < temporary[7][2]:
+                    if timeE[1] < temporary[7][1] or timeE[2] < temporary[7][2]:
                         timeE = temporary[7]
-                    if timeF[1] < temporary[8][1] and timeF[2] < temporary[8][2]:
+                    if timeF[1] < temporary[8][1] or timeF[2] < temporary[8][2]:
                         timeF = temporary[8]
-                    classificacao = main.exibeClassificacao()
+                    classificacao = [timeA, timeB, timeC, timeD, timeE, timeF]
+                    classificacao = main.exibeClassificacao(classificacao)
                     for pr in partidas_rodando:
                         if pr[1] == temporary[9]:
                             partidas_rodando.remove(pr)
@@ -298,7 +299,7 @@ def run_champ():
                     trigger_send_msg_finished_game = True
                     break
             if not partidas:
-                print('Partidas finalizadas')
+                print('Partidas finalizadas\n')
                 print(classificacao)
                 break
 
