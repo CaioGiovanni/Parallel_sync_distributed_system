@@ -278,7 +278,7 @@ def send_messages(client, username, message=None):
             if finished_champ:
                 message = 'Finished:' + str([classificacao, historicoPartida, partidas, timeA, timeB, timeC, timeD, timeE, timeF, IPAddr])
                 client.send(message.encode('utf-8'))
-                trigger_send_msg_finished_game = False
+                finished_champ = False
                 message = None
         except Exception as e:
             return
