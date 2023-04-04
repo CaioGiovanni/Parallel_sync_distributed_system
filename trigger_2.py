@@ -259,6 +259,7 @@ def send_messages(client, username, message=None):
         try:
             global trigger_send_msg
             global trigger_send_msg_finished_game
+            global finished_champ
             global IPAddr
             if message:
                 client.send(f'<{username}> {message}'.encode('utf-8'))
@@ -269,6 +270,12 @@ def send_messages(client, username, message=None):
                 trigger_send_msg = False
                 message = None
             elif trigger_send_msg_finished_game:
+                message = 'Finished:' + str([classificacao, historicoPartida, partidas, timeA, timeB, timeC, timeD, timeE, timeF, IPAddr])
+                client.send(message.encode('utf-8'))
+                trigger_send_msg_finished_game = False
+                message = None
+
+            if finished_champ:
                 message = 'Finished:' + str([classificacao, historicoPartida, partidas, timeA, timeB, timeC, timeD, timeE, timeF, IPAddr])
                 client.send(message.encode('utf-8'))
                 trigger_send_msg_finished_game = False
@@ -305,7 +312,6 @@ def run_champ():
                     global IPAddr
                     partidas_rodando.append((p, IPAddr))
                     trigger_send_msg = True
-                    original_p = p
                     p[0], p[1] = main.realizaPartida(p, p[0], p[1], historicoPartida)
                     for xp in p:
                         if xp[0] == 'TimeA':
@@ -343,7 +349,8 @@ def run_champ():
                 time.sleep(2)
                 print('Agurdando finalizar: ' + str(partidas_rodando))
             if not partidas and not partidas_rodando:
-                time.sleep(10)
+                finished_champ = True
+                time.sleep(30)
                 print('Partidas finalizadas\n')
                 print(classificacao)
                 break
