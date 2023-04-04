@@ -148,7 +148,7 @@ def receive_messages(client):
         global start_champ
         global classificacao
         global historicoPartida
-        global servers_conectados
+        global partidas_rodando
         global partidas
         global timeA
         global timeB
@@ -159,7 +159,6 @@ def receive_messages(client):
         try:
             msg = client.recv(2048).decode('utf-8')
             if msg:
-                global partidas_rodando
                 global servers_conectados
                 if 'Times jogando:' in msg:
                     msg = str(msg).strip('Times jogando:')
@@ -224,9 +223,9 @@ def receive_messages(client):
             print(e)
             global error_on_server
             global server_host_atual
-            for server_temp in servers_conectados:
-                if server_temp[0] == server_host_atual:
-                    servers_conectados.remove(server_temp)
+            for server_temp in partidas_rodando:
+                if server_temp[1] == server_host_atual:
+                    partidas_rodando.remove(server_temp)
             error_on_server = True
             # client.close()
             # break
