@@ -291,10 +291,10 @@ def run_champ():
                             break
                     trigger_send_msg_finished_game = True
                     break
-        elif partidas == []:
-            print('Partidas finalizadas')
-            print(classificacao)
-            break
+            if not partidas:
+                print('Partidas finalizadas')
+                print(classificacao)
+                break
 
 
 thread_champ = threading.Thread(target=run_champ)
