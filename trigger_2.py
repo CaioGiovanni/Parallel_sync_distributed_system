@@ -20,7 +20,9 @@ timeF = ["TimeF", 0, 0]
 classificacao = [timeA, timeB, timeC, timeD, timeE, timeF]
 historicoPartida = []
 
-partidas = [[timeA, timeB], [timeC, timeD], [timeE, timeF]]
+partidas_1 = [[timeA, timeB], [timeC, timeD], [timeE, timeF]]
+partidas_2 = [[timeA, timeC], [timeD, timeE], [timeF, timeB]]
+partidas = partidas_1
 partidas_rodando = []
 
 trigger_send_msg = False
@@ -259,6 +261,7 @@ def send_messages(client, username, message=None):
 
 def run_champ():
     while True:
+        global partidas
         global start_champ
         global finished_champ
         global classificacao
@@ -305,6 +308,9 @@ def run_champ():
                     for partida_temp in partidas:
                         if partida_temp[0][0] == p[0][0] and partida_temp[1][0] == p[1][0]:
                             partidas.remove(partida_temp)
+                            for x_1 in partidas_1:
+                                if partida_temp[0][0] == x_1[0][0] and partida_temp[1][0] == x_1[1][0]:
+                                    partidas = partidas_2
                             break
                     trigger_send_msg_finished_game = True
                     break
