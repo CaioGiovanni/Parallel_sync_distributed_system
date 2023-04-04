@@ -307,6 +307,7 @@ def run_champ():
                     for partida_temp in partidas_rodando:
                         if partida_temp[0][0][0] == p[0][0] and partida_temp[0][1][0] == p[1][0]:
                             partidas_rodando.remove(partida_temp)
+                            break
                     for partida_temp in partidas:
                         if partida_temp[0][0] == p[0][0] and partida_temp[1][0] == p[1][0]:
                             partidas.remove(partida_temp)
