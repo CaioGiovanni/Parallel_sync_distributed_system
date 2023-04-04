@@ -337,9 +337,12 @@ def run_champ():
                                         partidas = partidas_2
                             break
                     trigger_send_msg_finished_game = True
-                    print('Finished partidas para serem jogadas: ' + str(partidas))
+                    # print('Finished partidas para serem jogadas: ' + str(partidas))
                     break
-            if not partidas:
+            if partidas_rodando:
+                time.sleep(2)
+                print('Teste ' + str(partidas_rodando))
+            if not partidas and not partidas_rodando:
                 time.sleep(30)
                 print('Partidas finalizadas\n')
                 print(classificacao)
