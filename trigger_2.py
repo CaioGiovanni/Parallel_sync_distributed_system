@@ -37,7 +37,7 @@ hostname = socket.gethostname()
 IPAddr = socket.gethostbyname(hostname)
 
 clients = []
-servers_conectados = [('192.168.0.72', 7777)]
+servers_conectados = [('192.168.0.61', 7777)]
 error_on_server = False
 first_exec_connect = True
 
@@ -194,7 +194,8 @@ def receive_messages(client):
                         if pr[1] == temporary[9]:
                             partidas_rodando.remove(pr)
                             break
-                    print(f'Atualização "Finished" {socket.gethostname()}: ' + str(partidas_rodando) + '\n')
+                    print(f'Atualização partidas "Finished" {socket.gethostname()}: ' + str(partidas) + '\n')
+                    print(f'Atualização partidas rodando "Finished" {socket.gethostname()}: ' + str(partidas_rodando) + '\n')
                 elif 'Updating:' in msg:
                     msg = str(msg).strip('Updating:')
                     temporary = ast.literal_eval(msg)
@@ -317,6 +318,7 @@ def run_champ():
                                         partidas = partidas_2
                             break
                     trigger_send_msg_finished_game = True
+                    print('Finished partidas para serem jogadas: ' + str(partidas))
                     break
             if not partidas:
                 time.sleep(30)
