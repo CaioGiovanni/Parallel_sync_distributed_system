@@ -341,9 +341,9 @@ def run_champ():
                     break
             if partidas_rodando:
                 time.sleep(2)
-                print('Teste ' + str(partidas_rodando))
+                print('Agurdando finalizar: ' + str(partidas_rodando))
             if not partidas and not partidas_rodando:
-                time.sleep(30)
+                time.sleep(10)
                 print('Partidas finalizadas\n')
                 print(classificacao)
                 break
