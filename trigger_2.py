@@ -26,6 +26,7 @@ partidas_rodando = []
 trigger_send_msg = False
 trigger_send_msg_finished_game = False
 start_champ = False
+finished_champ = False
 
 ############## SERVER ###################
 
@@ -244,6 +245,8 @@ def send_messages(client, username, message=None):
 def run_champ():
     while True:
         global start_champ
+        global finished_champ
+        global classificacao
         global trigger_send_msg
         global trigger_send_msg_finished_game
         global timeA
@@ -261,7 +264,6 @@ def run_champ():
                         not_running_bool = False
 
                 if not_running_bool:
-                    global classificacao
                     global IPAddr
                     partidas_rodando.append((p, IPAddr))
                     trigger_send_msg = True
@@ -289,6 +291,10 @@ def run_champ():
                         pass
                     trigger_send_msg_finished_game = True
                     break
+        elif partidas == []:
+            print('Partidas finalizadas')
+            print(classificacao)
+            break
 
 
 thread_champ = threading.Thread(target=run_champ)
