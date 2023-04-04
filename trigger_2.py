@@ -285,10 +285,10 @@ def run_champ():
 
                     print('Finished: ' + str(p))
                     partidas_rodando.remove((original_p, IPAddr))
-                    try:
-                        partidas.remove(original_p)
-                    except Exception as e:
-                        pass
+                    for partida_temp in partidas:
+                        if partida_temp[0][0] == p[0][0] and partida_temp[1][0] == p[1][0]:
+                            partidas.remove(partida_temp)
+                            break
                     trigger_send_msg_finished_game = True
                     break
         elif partidas == []:
