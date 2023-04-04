@@ -168,15 +168,21 @@ def receive_messages(client):
                     msg = str(msg).strip('Finished:')
                     temporary = ast.literal_eval(msg)
                     ##### BEFORE CLASSIFICATION ####
-                    classificacao = temporary[0]
                     historicoPartida = temporary[1]
                     partidas = temporary[2]
-                    timeA = temporary[3]
-                    timeB = temporary[4]
-                    timeC = temporary[5]
-                    timeD = temporary[6]
-                    timeE = temporary[7]
-                    timeF = temporary[8]
+                    if timeA[1] < temporary[3][1] and timeA[2] < temporary[3][2]:
+                        timeA = temporary[3]
+                    if timeB[1] < temporary[4][1] and timeB[2] < temporary[4][2]:
+                        timeB = temporary[4]
+                    if timeC[1] < temporary[5][1] and timeC[2] < temporary[5][2]:
+                        timeC = temporary[5]
+                    if timeD[1] < temporary[6][1] and timeD[2] < temporary[6][2]:
+                        timeD = temporary[6]
+                    if timeE[1] < temporary[7][1] and timeE[2] < temporary[7][2]:
+                        timeE = temporary[7]
+                    if timeF[1] < temporary[8][1] and timeF[2] < temporary[8][2]:
+                        timeF = temporary[8]
+                    classificacao = main.exibeClassificacao()
                     for pr in partidas_rodando:
                         if pr[1] == temporary[9]:
                             partidas_rodando.remove(pr)
