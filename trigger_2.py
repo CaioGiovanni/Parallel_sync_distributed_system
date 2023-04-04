@@ -30,6 +30,7 @@ finished_champ = False
 
 ############## SERVER ###################
 
+server_host_atual = None
 hostname = socket.gethostname()
 IPAddr = socket.gethostbyname(hostname)
 
@@ -67,8 +68,11 @@ def messages_treatment(client):
                 if msg and (msg, 7777) not in servers_conectados:
                     servers_conectados.append((msg, 7777))
                 update_chave(('Times jogando:' + str(partidas_rodando)).encode('utf-8'), client)
+                time.sleep(2)
                 update_chave(('Updating:' + str([classificacao, historicoPartida, partidas, timeA, timeB, timeC, timeD, timeE, timeF])).encode('utf-8'), client)
+                time.sleep(2)
                 update_chave(('Servidores:' + str(servers_conectados)).encode('utf-8'), client)
+                time.sleep(2)
                 broadcast(('Servidores:' + str(servers_conectados)).encode('utf-8'), client)
             else:
                 broadcast(msg, client)
@@ -218,6 +222,10 @@ def receive_messages(client):
             print('Precione <ENTER> para continuar...')
             print(e)
             global error_on_server
+            global server_host_atual
+            for server_temp in servers_conectados:
+                if server_temp[0] == server_host_atual:
+                    servers_conectados.remove(server_temp)
             error_on_server = True
             # client.close()
             # break
@@ -314,6 +322,7 @@ thread_champ.start()
 
 time.sleep(1)
 for server in servers_conectados:
+    server_host_atual = server[0]
     thread_client = threading.Thread(target=client_main, args=[server[0], server[1]])
     thread_client.start()
     thread_client.join()
